@@ -3,6 +3,7 @@ package com.facu.restfake.controllers;
 import com.facu.restfake.entities.Base;
 import com.facu.restfake.services.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,15 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceIm
         }
     }
 
-
+    @GetMapping("/paged")
+    public ResponseEntity<?> getAllPaged(Pageable pageable) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.findALL(pageable));
+        } catch (Exception e) {
+            String strErr = e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":"+strErr+"}");
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
